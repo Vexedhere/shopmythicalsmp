@@ -16,7 +16,6 @@
 <header class="wrap nav">
   <a class="brand" href="#" aria-label="Mythical SMP home" style="text-decoration:none"><span class="logo">✦</span><span>MYTHICAL <span style="color:var(--mint)">SMP</span></span></a>
   <div class="links" style="display:flex;gap:24px"><a href="#ranks">Ranks</a><a href="#perks">Why upgrade?</a><a href="#support">Support</a></div>
-  <button class="btn secondary" id="settingsBtn" type="button">Store setup ⚙</button>
 </header>
 <main>
 <section class="wrap hero">
@@ -63,30 +62,19 @@
 <section class="wrap" id="support"><div class="notice"><strong>Before you buy:</strong> Rank perks must be configured on the server and in Tebex. Prices shown here are the planned display prices; Tebex checkout will show the actual package price and currency. This is not an official Minecraft product and is not approved by or associated with Mojang or Microsoft.</div></section>
 </main>
 <footer class="wrap footer"><span>© <span id="year"></span> Mythical SMP. Built for the community.</span><span>Powered by Tebex · Purple × Mint × Gold</span></footer>
-<div class="modal-backdrop" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
-  <div class="modal"><h2 id="settingsTitle">Connect your Tebex store</h2><p>Enter your <strong>public Headless API token</strong> from the Tebex creator panel. This is a public storefront token, not your private key. Never put your private key here.</p>
-    <div class="field"><label for="tokenInput">Tebex public token</label><input id="tokenInput" autocomplete="off" placeholder="Paste public webstore token"><small>Used by the browser to create a basket and send the player to Tebex checkout.</small></div>
-    <div class="modal-actions"><button class="btn primary" id="saveToken">Save token</button><button class="btn secondary" id="closeSettings">Cancel</button></div>
-  </div>
-</div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script>
 const API='https://headless.tebex.io/api';
 const $=s=>document.querySelector(s);
-const tokenKey='mythicalSmpTebexPublicToken';
-let publicToken='';
-try{publicToken=localStorage.getItem(tokenKey)||''}catch(e){}
+// Configure this with your Tebex PUBLIC Headless token before publishing.
+// Never put a Tebex private key in this client-side file.
+const PUBLIC_TEBEX_TOKEN='PASTE_YOUR_TEBEX_PUBLIC_TOKEN_HERE';
+const publicToken=PUBLIC_TEBEX_TOKEN;
 $('#year').textContent=new Date().getFullYear();
 function toast(message){const t=$('#toast');t.textContent=message;t.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.classList.remove('show'),4200)}
-function openSettings(){$('#tokenInput').value=publicToken;$('#settingsModal').classList.add('open')}
-function closeSettings(){$('#settingsModal').classList.remove('open')}
-$('#settingsBtn').addEventListener('click',openSettings);
-$('#closeSettings').addEventListener('click',closeSettings);
-$('#settingsModal').addEventListener('click',e=>{if(e.target===$('#settingsModal'))closeSettings()});
-$('#saveToken').addEventListener('click',()=>{const value=$('#tokenInput').value.trim();if(!value){toast('Paste your Tebex public token first.');return}publicToken=value;try{localStorage.setItem(tokenKey,value)}catch(e){}closeSettings();toast('Public token saved in this browser. Try a rank checkout.');});
 async function request(url,options={}){const res=await fetch(url,options);let data={};try{data=await res.json()}catch(e){}if(!res.ok)throw new Error(data.message||data.error||('Tebex returned HTTP '+res.status));return data}
 async function buyRank(button){
- if(!publicToken){openSettings();toast('Add your Tebex public token to enable checkout.');return}
+ if(!publicToken||publicToken==='PASTE_YOUR_TEBEX_PUBLIC_TOKEN_HERE'){toast('Store checkout is being configured. Please try again soon.');return}
  const id=button.dataset.id,name=button.dataset.name;
  button.classList.add('loading');const old=button.textContent;button.textContent='Connecting to Tebex…';
  try{

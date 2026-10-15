@@ -26,6 +26,7 @@
   <h1>Forge your own <span class="gradient">legacy.</span></h1>
   <p>Stand out on Mythical SMP with exclusive ranks, useful perks and cosmetics. Choose your tier, enter your Minecraft username at checkout, and make your mark.</p>
   <div class="hero-actions"><a class="btn primary" href="#ranks">Explore ranks <span>↘</span></a><a class="btn secondary" href="#perks">What's included?</a></div>
+  <div class="server-status-widget" aria-live="polite" style="max-width:470px;margin:26px auto 0;border:1px solid var(--line);border-radius:16px;background:#ffffff08;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;text-align:left"><div><div style="font-size:12px;color:var(--muted);margin-bottom:5px"><span id="server-dot" style="color:var(--gold)">●</span> <span id="player-count">Server status coming soon</span></div><strong id="server-ip-text" style="font-size:15px">Add your server address</strong></div><button class="btn secondary" id="copy-ip-btn" type="button" style="padding:10px 12px">Copy IP</button></div>
 </section>
 
 <section class="wrap" id="about">
@@ -69,9 +70,10 @@
     </article>
   </div>
 </section>
+<section class="wrap" id="comparison"><div class="section-head"><div><h2>Compare every rank</h2><p>See the advertised perks side by side.</p></div></div><div style="overflow-x:auto;border:1px solid var(--line);border-radius:18px;background:#ffffff04"><table style="width:100%;border-collapse:collapse;min-width:680px;text-align:left;font-size:13px"><thead><tr style="background:#ffffff08"><th style="padding:15px">Perk</th><th style="padding:15px;color:var(--mint)">VIP</th><th style="padding:15px;color:#72baff">ELITE</th><th style="padding:15px;color:#c3a4ff">LEGEND</th><th style="padding:15px;color:var(--gold)">MYTHIC</th><th style="padding:15px;color:#ff9bcb">OVERLORD</th></tr></thead><tbody><tr><td style="padding:14px;border-top:1px solid var(--line)">Set homes</td><td style="padding:14px;border-top:1px solid var(--line)">3</td><td style="padding:14px;border-top:1px solid var(--line)">5</td><td style="padding:14px;border-top:1px solid var(--line)">8</td><td style="padding:14px;border-top:1px solid var(--line)">12</td><td style="padding:14px;border-top:1px solid var(--line)">20</td></tr><tr><td style="padding:14px;border-top:1px solid var(--line)">Special commands</td><td style="padding:14px;border-top:1px solid var(--line)">/hat</td><td style="padding:14px;border-top:1px solid var(--line)">/near, /workbench</td><td style="padding:14px;border-top:1px solid var(--line)">/feed, /craft</td><td style="padding:14px;border-top:1px solid var(--line)">/condense</td><td style="padding:14px;border-top:1px solid var(--line)">/fly in claims</td></tr><tr><td style="padding:14px;border-top:1px solid var(--line)">Kit / extras</td><td style="padding:14px;border-top:1px solid var(--line)">Weekly Starter Kit</td><td style="padding:14px;border-top:1px solid var(--line)">Tier II Gear Kit</td><td style="padding:14px;border-top:1px solid var(--line)">Tier III Gear Kit + particles</td><td style="padding:14px;border-top:1px solid var(--line)">Armor Trim Kit + glowing name</td><td style="padding:14px;border-top:1px solid var(--line)">Death message + max vault</td></tr></tbody></table></div></section>
 <section class="wrap info-grid" id="perks">
   <article class="info"><span class="ico">⏳</span><h3>30-day rank access</h3><p>Ranks are intended to last 30 days. Renew through the store when your rank expires. Confirm each package's expiry and command settings in Tebex before launch.</p></article>
-  <article class="info"><span class="ico">⚡</span><h3>Automatic delivery</h3><p>After checkout, Tebex handles payment and your configured server commands deliver the purchased rank. Your Minecraft username must be entered correctly.</p></article>
+  <article class="info"><span class="ico">⚡</span><h3>Simple checkout</h3><p>Checkout is handled by Tebex. Enter your Minecraft username carefully and follow the payment instructions to complete your order.</p></article>
   <article class="info"><span class="ico">💜</span><h3>Support the server</h3><p>Every purchase helps support Mythical SMP. Keep the experience fair for everyone and check each rank's perks before buying.</p></article>
 </section>
 
@@ -95,7 +97,7 @@
   </div>
 </section>
 <section class="wrap"><div class="community-card"><div><span class="mini-label">Your adventure awaits</span><h3>Ready to write your next chapter?</h3><p>Choose a rank, review the details, and head to secure checkout when you're ready.</p></div><div class="community-actions"><a class="btn secondary" href="#about">About the server</a><a class="btn primary" href="#ranks">Browse ranks ↗</a></div></div></section>
-<section class="wrap" id="support"><div class="notice"><strong>Before you buy:</strong> Rank perks must be configured on the server and in Tebex. Prices shown here are the planned display prices; Tebex checkout will show the actual package price and currency. This is not an official Minecraft product and is not approved by or associated with Mojang or Microsoft.</div></section>
+<section class="wrap" id="support"><div class="notice"><strong>Good to know:</strong> Available perks depend on the server setup. Please review the package details and final price at Tebex checkout. Purchases are optional. Mythical SMP is not an official Minecraft product and is not approved by or associated with Mojang or Microsoft. Server owners should ensure rank perks comply with applicable Minecraft usage and commercial guidelines.</div></section>
 </main>
 <footer class="wrap footer"><span>© <span id="year"></span> Mythical SMP. Built for the community.</span><span>Powered by Tebex · Purple × Mint × Gold</span></footer>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -108,6 +110,14 @@ const $=s=>document.querySelector(s);
 const PUBLIC_TEBEX_TOKEN=EXISTING_PUBLIC_TEBEX_TOKEN;
 const publicToken=PUBLIC_TEBEX_TOKEN;
 $('#year').textContent=new Date().getFullYear();
+const SERVER_ADDRESS=''; // Add the actual server address here.
+const STATUS_HOST=SERVER_ADDRESS;
+const ipText=$('#server-ip-text');
+const playerCount=$('#player-count');
+const dot=$('#server-dot');
+if(STATUS_HOST){ipText.textContent=STATUS_HOST;fetch('https://api.mcsrvstat.us/3/'+encodeURIComponent(STATUS_HOST),{headers:{'Accept':'application/json'}}).then(res=>{if(!res.ok)throw new Error('Status unavailable');return res.json()}).then(data=>{if(data.online&&data.players){playerCount.textContent=data.players.online+' / '+data.players.max+' players online';dot.style.color='#91f5d1'}else{playerCount.textContent='Currently offline';dot.style.color='#ff9b9b'}}).catch(()=>{playerCount.textContent='Status temporarily unavailable';dot.style.color='var(--gold)'})}else{playerCount.textContent='Server status coming soon'}
+$('#copy-ip-btn').addEventListener('click',async()=>{if(!STATUS_HOST){toast('Server address has not been added yet.');return}try{await navigator.clipboard.writeText(STATUS_HOST);toast('Server IP copied!')}catch(e){const input=document.createElement('textarea');input.value=STATUS_HOST;input.style.position='fixed';input.style.opacity='0';document.body.appendChild(input);input.select();const ok=document.execCommand('copy');input.remove();toast(ok?'Server IP copied!':'Could not copy automatically — '+STATUS_HOST)}});
+
 function toast(message){const t=$('#toast');t.textContent=message;t.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.classList.remove('show'),4200)}
 async function request(url,options={}){const res=await fetch(url,options);let data={};try{data=await res.json()}catch(e){}if(!res.ok)throw new Error(data.message||data.error||('Tebex returned HTTP '+res.status));return data}
 async function buyRank(button){
